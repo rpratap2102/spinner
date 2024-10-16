@@ -1,0 +1,61 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f7f7f7;
+    margin: 0;
+}
+
+.container {
+    text-align: center;
+}
+
+.spinner-container {
+    margin-top: 20px;
+}
+
+
+.result {
+    margin-top: 20px;
+    font-size: 20px;
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+input, select {
+    padding: 10px;
+    margin: 10px 0;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.spinner {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    border: 5px solid #f0f0f0;
+    border-top: 5px solid #3498db;
+    animation: spin 0s ease-in-out infinite;
+    margin: 20px auto; /* Center the spinner */
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}

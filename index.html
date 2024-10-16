@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Team Member Selector</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Select Team Members</h1>
+        
+        <label for="teamSelect">Choose a Team:</label>
+        <select id="teamSelect">
+            <option value="">Select a team</option>
+        </select>
+
+        <label for="memberSelect">Choose from existing members:</label>
+        <select id="memberSelect" multiple></select>
+
+        <h2>Or Add Dynamic Members</h2>
+        <input type="text" id="newMemberInput" placeholder="Enter new member name" />
+        <button id="addMemberButton">Add Member</button>
+
+        <div class="spinner-container">
+            <div class="spinner" id="spinner"></div>
+            <button id="spinButton">Spin</button>
+        </div>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script src="./script.js"></script>
+</body>
+</html>

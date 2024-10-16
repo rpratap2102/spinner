@@ -1,0 +1,7 @@
+{
+    "teams": {
+        "Team Alpha": ["Alice", "Bob", "Charlie"],
+        "Team Bravo": ["Diana", "Eve", "Frank"],
+        "Team Charlie": ["George", "Harry", "Isabella"]
+    }
+}
