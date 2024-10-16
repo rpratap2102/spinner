@@ -2,16 +2,24 @@ let teams = {};
 let currentTeamMembers = [];
 
 // Fetch teams dynamically
-fetch('teams.json')
-    .then(response => response.json())
-    .then(data => {
-        teams = data.teams;
-        populateTeamDropdown(Object.keys(teams));
-    })
-    .catch(error => {
-        document.getElementById('result').textContent = "Error loading teams. Please try again later.";
-        console.error('Error fetching team members:', error);
-    });
+function fetchTeams() {
+    fetch('teams.json')
+        .then(response => response.json())
+        .then(data => {
+            teams = data.teams;
+            populateTeamDropdown(Object.keys(teams));
+        })
+        .catch(error => {
+            document.getElementById('result').textContent = "Error loading teams. Please try again later.";
+            console.error('Error fetching team members:', error);
+        });
+}
+
+// Initial fetch of teams
+fetchTeams();
+
+// Get Teams button to refetch teams
+document.getElementById('getTeamsButton').addEventListener('click', fetchTeams);
 
 // Populate the team dropdown
 function populateTeamDropdown(teamNames) {
@@ -80,7 +88,6 @@ document.getElementById('removeMemberButton').addEventListener('click', () => {
 });
 
 // Spin the wheel and select a random member
-// Spin the wheel and select a random member
 document.getElementById('spinButton').addEventListener('click', () => {
     const selectedMembers = Array.from(document.getElementById('memberSelect').selectedOptions).map(option => option.value);
 
@@ -102,4 +109,3 @@ document.getElementById('spinButton').addEventListener('click', () => {
         document.getElementById('result').textContent = `Selected team member: ${selectedMembers[randomIndex]}`;
     }, spinTime);
 });
-
