@@ -1,32 +1,22 @@
-const teamSelect = document.getElementById('teamSelect');
-const memberSelect = document.getElementById('memberSelect');
-const newMemberInput = document.getElementById('newMemberInput');
-const addMemberButton = document.getElementById('addMemberButton');
-const spinner = document.getElementById('spinner');
-const spinButton = document.getElementById('spinButton');
-const result = document.getElementById('result');
 let teams = {};
 let currentTeamMembers = [];
 
-// Fetch teams from teams.json
+// Fetch teams dynamically
 fetch('teams.json')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
         teams = data.teams;
         populateTeamDropdown(Object.keys(teams));
     })
     .catch(error => {
+        document.getElementById('result').textContent = "Error loading teams. Please try again later.";
         console.error('Error fetching team members:', error);
     });
 
-
 // Populate the team dropdown
 function populateTeamDropdown(teamNames) {
+    const teamSelect = document.getElementById('teamSelect');
+    teamSelect.innerHTML = `<option value="">--Select a team--</option>`; // Reset
     teamNames.forEach(team => {
         const option = document.createElement('option');
         option.value = team;
@@ -35,20 +25,22 @@ function populateTeamDropdown(teamNames) {
     });
 }
 
-// Populate the member dropdown when a team is selected
-teamSelect.addEventListener('change', () => {
-    const selectedTeam = teamSelect.value;
-    if (selectedTeam !== "") {
-        currentTeamMembers = teams[selectedTeam];
+// Update members when a team is selected
+document.getElementById('teamSelect').addEventListener('change', () => {
+    const selectedTeam = document.getElementById('teamSelect').value;
+    if (selectedTeam) {
+        currentTeamMembers = teams[selectedTeam] || [];
         populateMemberDropdown(currentTeamMembers);
     } else {
-        memberSelect.innerHTML = ""; // Clear member dropdown if no team is selected
+        document.getElementById('memberSelect').innerHTML = ''; // Clear member list
+        currentTeamMembers = [];
     }
 });
 
-// Populate the member dropdown with selected team members
+// Populate member dropdown with current team members
 function populateMemberDropdown(members) {
-    memberSelect.innerHTML = ""; // Clear existing options
+    const memberSelect = document.getElementById('memberSelect');
+    memberSelect.innerHTML = ''; // Clear current list
     members.forEach(member => {
         const option = document.createElement('option');
         option.value = member;
@@ -57,25 +49,43 @@ function populateMemberDropdown(members) {
     });
 }
 
-// Add new dynamic member
-addMemberButton.addEventListener('click', () => {
-    const newMember = newMemberInput.value.trim();
-    if (newMember !== "") {
+// Add a new member to the current team
+document.getElementById('addMemberButton').addEventListener('click', () => {
+    const newMember = document.getElementById('newMemberInput').value.trim();
+    if (newMember) {
         currentTeamMembers.push(newMember);
         const option = document.createElement('option');
         option.value = newMember;
         option.text = newMember;
-        memberSelect.appendChild(option);
-        newMemberInput.value = "";
+        document.getElementById('memberSelect').appendChild(option);
+        document.getElementById('newMemberInput').value = ''; // Clear input
+        teams[document.getElementById('teamSelect').value] = currentTeamMembers; // Update team members dynamically
     }
 });
 
+// Remove a selected member from the current team
+document.getElementById('removeMemberButton').addEventListener('click', () => {
+    const memberSelect = document.getElementById('memberSelect');
+    const selectedMembers = Array.from(memberSelect.selectedOptions).map(option => option.value);
+
+    selectedMembers.forEach(member => {
+        const index = currentTeamMembers.indexOf(member);
+        if (index > -1) {
+            currentTeamMembers.splice(index, 1); // Remove from list
+            memberSelect.querySelector(`option[value="${member}"]`).remove(); // Remove from dropdown
+        }
+    });
+
+    teams[document.getElementById('teamSelect').value] = currentTeamMembers; // Update team members dynamically
+});
+
 // Spin the wheel and select a random member
-spinButton.addEventListener('click', () => {
-    let selectedMembers = Array.from(memberSelect.selectedOptions).map(option => option.value);
+// Spin the wheel and select a random member
+document.getElementById('spinButton').addEventListener('click', () => {
+    const selectedMembers = Array.from(document.getElementById('memberSelect').selectedOptions).map(option => option.value);
 
     if (selectedMembers.length === 0) {
-        result.textContent = "Please select at least one member.";
+        document.getElementById('result').textContent = "Please select at least one member.";
         return;
     }
 
@@ -83,14 +93,13 @@ spinButton.addEventListener('click', () => {
     let randomIndex = Math.floor(Math.random() * selectedMembers.length);
 
     // Reset any previous animation
-    spinner.style.animation = 'none';
-    setTimeout(() => {
-        spinner.style.animation = `spin ${spinTime}ms ease-in-out`; // Start spin animation
-    }, 10);
+    const spinner = document.getElementById('spinner');
+    spinner.classList.remove('spin-animation'); // Remove previous spin animation
+    void spinner.offsetWidth; // Trigger reflow to restart animation
+    spinner.classList.add('spin-animation'); // Add spin animation
 
     setTimeout(() => {
-        spinner.style.animation = ''; // Reset animation after spin
-        result.textContent = `Selected team member: ${selectedMembers[randomIndex]}`;
+        document.getElementById('result').textContent = `Selected team member: ${selectedMembers[randomIndex]}`;
     }, spinTime);
 });
 
